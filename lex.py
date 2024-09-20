@@ -1,3 +1,6 @@
+import enum
+import sys
+
 class Lexer:
     def __init__(self, source):
         self.source = source + '\n' # source code to lex as a string. append newline to simplify lexing/parsing the last token/statement
@@ -23,11 +26,12 @@ class Lexer:
 
     # Invalid token found, print error message and exit
     def abort(self, message):
-        pass
+        sys.exit("Lexing error. " + message)
 
     # Skip whitespace except newlines, which we will use to indicate end of statement
     def skipWhitespace(self):
-        pass
+        while self.curChar == ' ' or self.curChar == '\t' or self.curChar == '\r':
+            self.nextChar()
 
     # Skip comments in the code
     def skipComment(self):
@@ -35,5 +39,92 @@ class Lexer:
 
     # Return the next token
     def getToken(self):
-        pass
-    
+        self.skipWhitespace()
+        token = None
+        # Check the first character of this token to see if we can decide what it is
+        # If it is a multiple character operator (!=), number, identifier, or keyword then process the rest
+        if self.curChar == '+':  # plus token
+            token = Token(self.curChar, TokenType.PLUS)
+        elif self.curChar == '-':  # minus token
+            token = Token(self.curChar, TokenType.MINUS)
+        elif self.curChar == '*':  # asterisk token
+            token = Token(self.curChar, TokenType.ASTERISK)
+        elif self.curChar == '/':  # slash token 
+            token = Token(self.curChar, TokenType.SLASH)
+        elif self.curChar == '=':  # check if = or ==
+            if self.peek() == '=':
+                lastChar = self.curChar
+                self.nextChar()
+                token = Token(lastChar + self.curChar, TokenType.EQEQ)
+            else:
+                token = Token(self.curChar, TokenType.EQ)
+        elif self.curChar == '<':  # check if < or <=
+            if self.peek() == '=':
+                lastChar = self.curChar
+                self.nextChar()
+                token = Token(lastChar + self.curChar, TokenType.LTEQ)
+            else:
+                token = Token(self.curChar, TokenType.LT)
+        elif self.curChar == '>':  # check if > or >=
+            if self.peek() == '=':
+                lastChar = self.curChar
+                self.nextChar()
+                token = Token(lastChar + self.curChar, TokenType.GTEQ)
+            else:
+                token = Token(self.curChar, TokenType.GT)
+        elif self.curChar == '!':  # != or error
+            if self.peek() == '=':
+                lastChar = self.curChar
+                self.nextChar()
+                token = Token(lastChar + self.curChar, TokenType.NOTEQ)
+            else:
+                self.abort("Expected !=, got !" + self.peek())
+        elif self.curChar == '\n':  # newline token 
+            token = Token(self.curChar, TokenType.NEWLINE)
+        elif self.curChar == '\0':  # EOF token
+            token = Token('', TokenType.EOF)
+        else:
+            # Unknown token
+            self.abort("Unknown token: " + self.curChar)
+
+        self.nextChar()
+        return token
+
+
+# Token contains the original text and the type of token
+class Token:
+    def __init__(self, tokenText, tokenKind):
+        self.text = tokenText # the token's actual text, used for identifiers, numbers, and strings
+        self.kind = tokenKind # The type of token this toke is classified as
+
+
+class TokenType(enum.Enum):
+    EOF = -1
+    NEWLINE = 0
+    NUMBER = 1
+    IDENT = 2
+    STRING = 3
+    # keywords
+    LABEL = 101
+    GOTO = 102
+    PRINT = 103
+    INPUT = 104
+    LET = 105
+    IF = 106
+    THEN = 107
+    ENDIF = 108
+    WHILE = 109
+    REPEAT = 110
+    ENDWHILE = 111
+    #operators
+    EQ = 201
+    PLUS = 202
+    MINUS = 203
+    ASTERISK = 204
+    SLASH = 205
+    EQEQ = 206 
+    NOTEQ = 207
+    LT = 208
+    LTEQ = 209
+    GT = 210
+    GTEQ = 211
