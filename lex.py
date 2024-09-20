@@ -14,4 +14,15 @@ class Lexer:
     def abort(self, message):
         pass
 
+    # Skip whitespace except newlines, which we will use to indicate end of statement
+    def skipWhitespace(self):
+        pass
+
+    # Skip comments in the code
+    def skipComment(self):
+        pass
+
+    # Return the next token
+    def getToken(self):
+        pass
     
