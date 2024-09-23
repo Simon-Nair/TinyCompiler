@@ -1,7 +1,13 @@
 from lex import * 
 
 def main():
-    source = "IF+-123 foo*THEN/"
+    source = """
+    WHILE true
+    12 + 12
+    n != 1
+    \"sup\" 
+    = 1123
+    """
     lexer = Lexer(source)
 
 
