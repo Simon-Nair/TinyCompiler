@@ -163,7 +163,7 @@ class TokenType(enum.Enum):
     EOF = -1
     NEWLINE = 0
     NUMBER = 1
-    IDENT = 2
+    IDENT = 2  # identifier
     STRING = 3
     # keywords
     LABEL = 101

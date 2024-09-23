@@ -2,7 +2,7 @@ from lex import *
 
 def main():
     source = """
-    WHILE true
+    WHILE varName
     12 + 12
     n != 1
     \"sup\" 
