@@ -4,6 +4,8 @@ from lex import *
 # Parser objects keep track of current token and check if the code matches the grammer.
 class Parser:
     def __init__(self, lexer):
+        self.lexer = lexer
+
         self.curToken = None
         self.peekToken = None
         self.nextToken()
@@ -50,5 +52,23 @@ class Parser:
             print("STATEMENT-PRINT")
             self.nextToken()
 
+            if self.checkToken(TokenType.STRING):
+                # simple string
+                self.nextToken()
+            else:
+                # expression
+                self.expression()
+
+        self.nl()
+
+    # nl ::= '\n'+
+    def nl(self):
+        print("NEWLINE")
+
+        # require at least one newline
+        self.match(TokenType.NEWLINE)
+        # also allow extra newlines
+        while self.checkToken(TokenType.NEWLINE):
+            self.nextToken()
         
  
