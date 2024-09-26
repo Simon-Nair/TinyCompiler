@@ -7,6 +7,9 @@ def main():
     n != 1
     \"sup\" 
     = 1123
+    \"Simon Nair\"
+    1.2
+    234
     """
     lexer = Lexer(source)
 
